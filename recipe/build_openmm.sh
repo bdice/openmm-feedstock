@@ -19,8 +19,8 @@ if [[ "$target_platform" == linux* ]]; then
     CXXFLAGS+=" $MINIMAL_CFLAGS"
 
     # CUDA is enabled in these platforms
-    if [[ "$target_platform" == linux-64 || "$target_platform" == linux-ppc64le ]]; then
-        # # CUDA_HOME is defined by nvcc metapackage
+    if [[ "${cuda_compiler_version}" = 11* && ("$target_platform" == linux-64 || "$target_platform" == linux-ppc64le) ]]; then
+        # # CUDA_HOME is defined by nvcc metapackage for CUDA 11
         CMAKE_FLAGS+=" -DCUDA_TOOLKIT_ROOT_DIR=${CUDA_HOME}"
         # CUDA tests won't build, disable for now
         # See https://github.com/openmm/openmm/issues/2258#issuecomment-462223634
@@ -56,9 +56,9 @@ CMAKE_FLAGS+=" -DSWIG_EXECUTABLE=$(which swig)"
 # Build in subdirectory and install.
 mkdir -p build
 cd build
-cmake ${CMAKE_FLAGS} ${SRC_DIR}
-make -j$CPU_COUNT
-make -j$CPU_COUNT install PythonInstall
+cmake -GNinja ${CMAKE_FLAGS} ${SRC_DIR}
+ninja
+ninja install PythonInstall
 
 # Put examples into an appropriate subdirectory.
 mkdir -p ${PREFIX}/share/openmm/

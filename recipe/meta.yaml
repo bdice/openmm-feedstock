@@ -42,7 +42,7 @@ requirements:
     - {{ cdt('mesa-libgl-devel') }}  # [linux]
     - sysroot_linux-64 2.17  # [linux64]
     - cmake
-    - make  # [unix]
+    - ninja  # [unix]
     - jom  # [win]
     # needed for Python wrappers
     - doxygen
